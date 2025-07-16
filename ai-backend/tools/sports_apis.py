@@ -141,7 +141,7 @@ class APIFootballClient:
 
                     response.raise_for_status()
                     data = await response.json()
-                    logger.info("Team fetched successfully!")
+                    logger.info("Teams fetched successfully!")
                     #print(f"{data}")  # Optional for debugging
                     return data.get("response", [])
         except aiohttp.ClientResponseError as http_err:
@@ -257,10 +257,82 @@ class APIFootballClient:
         Returns:
             Dictionary containing match statistics
         """
-        # TODO: Implement API-Football match statistics endpoint
-        logger.info(
-            "Fetching match statistics for fixture %s", sanitize_log_input(fixture_id)
-        )
+        fixture_safe = sanitize_log_input(fixture_id)
+        logger.info("Fetching match statistics for fixture %s", fixture_safe)
+
+        headers = {
+            "x-apisports-key": self.api_key,
+            "accept": "application/json"
+        }
+
+        params = {
+            "fixture": fixture_safe
+        }
+
+        url = f"{self.base_url}/fixtures/statistics"
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, headers=headers, params=params) as response:
+                    logger.debug("Status code: %s", response.status)
+                    logger.debug("Rate limit remaining: %s/%s",
+                                 response.headers.get("x-ratelimit-requests-remaining"),
+                                 response.headers.get("x-ratelimit-requests-limit"))
+
+                    response.raise_for_status()
+                    data = await response.json()
+                    logger.info("Match statistics fetched successfully!")
+                    return data.get("response", {})
+        except aiohttp.ClientResponseError as http_err:
+            logger.error("HTTP error occurred: %s", http_err)
+        except Exception as err:
+            logger.error("Unexpected error: %s", err)
+
+        return {}
+
+    async def get_player(self, player_id: int, season: int) -> dict[str, Any]:
+        """
+        Get data for a single player in a specific season.
+
+        Args:
+            player_id: Unique player ID
+            season: Season year
+
+        Returns:
+            Dictionary containing player data
+        """
+        player_safe, season_safe = sanitize_multiple_log_inputs(player_id, season)
+        logger.info("Fetching data for player %s, season %s", player_safe, season_safe)
+
+        headers = {
+            "x-apisports-key": self.api_key,
+            "accept": "application/json"
+        }
+
+        params = {
+            "id": player_safe,
+            "season": season_safe
+        }
+
+        url = f"{self.base_url}/players"
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, headers=headers, params=params) as response:
+                    logger.debug("Status code: %s", response.status)
+                    logger.debug("Rate limit remaining: %s/%s",
+                                response.headers.get("x-ratelimit-requests-remaining"),
+                                response.headers.get("x-ratelimit-requests-limit"))
+
+                    response.raise_for_status()
+                    data = await response.json()
+                    logger.info("Player data fetched successfully!")
+                    return data.get("response", [{}])[0]  # return the first dict if found
+        except aiohttp.ClientResponseError as http_err:
+            logger.error("HTTP error occurred: %s", http_err)
+        except Exception as err:
+            logger.error("Unexpected error: %s", err)
+
         return {}
 
     async def get_players(self, team_id: int, season: int) -> list[dict[str, Any]]:
@@ -274,9 +346,38 @@ class APIFootballClient:
         Returns:
             List of player data dictionaries
         """
-        # TODO: Implement API-Football players endpoint
         team_safe, season_safe = sanitize_multiple_log_inputs(team_id, season)
         logger.info("Fetching players for team %s, season %s", team_safe, season_safe)
+
+        headers = {
+            "x-apisports-key": self.api_key,
+            "accept": "application/json"
+        }
+
+        params = {
+            "team": team_safe,
+            "season": season_safe
+        }
+
+        url = f"{self.base_url}/players"
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, headers=headers, params=params) as response:
+                    logger.debug("Status code: %s", response.status)
+                    logger.debug("Rate limit remaining: %s/%s",
+                                 response.headers.get("x-ratelimit-requests-remaining"),
+                                 response.headers.get("x-ratelimit-requests-limit"))
+
+                    response.raise_for_status()
+                    data = await response.json()
+                    logger.info("Player data fetched successfully!")
+                    return data.get("response", [])
+        except aiohttp.ClientResponseError as http_err:
+            logger.error("HTTP error occurred: %s", http_err)
+        except Exception as err:
+            logger.error("Unexpected error: %s", err)
+
         return []
 
 

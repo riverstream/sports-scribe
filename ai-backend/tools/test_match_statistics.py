@@ -15,13 +15,8 @@ async def main():
     base_url = os.getenv("API_FOOTBALL_BASE_URL")
     client = APIFootballClient(api_key,base_url)
 
-    # get all teams
-    result = await client.get_teams(39, 2025)  # 7131=Estadio Libertadores de América,2025
+    result = await client.get_match_statistics(1035553)
     print(result)
-
-    # get one team
-    result = await client.get_team(3997)
-    print(result)  
 
 if __name__ == "__main__":
     asyncio.run(main())

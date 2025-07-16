@@ -16,6 +16,7 @@ async def main():
     client = APIFootballClient(api_key,base_url)
 
     result = await client.get_league_standings(39, 2023)
+    print(result)
 
 if __name__ == "__main__":
     asyncio.run(main())
