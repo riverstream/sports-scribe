@@ -7,7 +7,6 @@ Focus: Football (Soccer) only for MVP.
 
 import logging
 import os
-from datetime import date
 from typing import Any
 
 import aiohttp
@@ -25,11 +24,15 @@ class APIFootballClient:
     Focus: Football (Soccer) data only for MVP
     """
 
-    def __init__(self, api_key: str | None = None, base_url: str | None = None):
+    def __init__(self,
+                 api_key: str | None = None,
+                 api_key_header: str | None = None,
+                 base_url: str | None = None):
         self.api_key = api_key or os.getenv("API_FOOTBALL_KEY")
+        self.api_key_header = api_key_header or os.getenv("API_FOOTBALL_KEY_HEADER")
         self.base_url = base_url or os.getenv("API_FOOTBALL_BASE_URL")
         self.headers = {
-            "x-apisports-key": self.api_key,
+            self.api_key_header: self.api_key,
             "accept": "application/json"
         }
         self.session: aiohttp.ClientSession | None = None
@@ -71,7 +74,7 @@ class APIFootballClient:
         )
 
         headers = {
-            "x-apisports-key": self.api_key,
+            self.api_key_header: self.api_key,
             "accept": "application/json"
         }
 
@@ -121,7 +124,7 @@ class APIFootballClient:
         logger.info("Fetching teams for league %s, season %s", team_safe)
 
         headers = {
-            "x-apisports-key": self.api_key,
+            self.api_key_header: self.api_key,
             "accept": "application/json"
         }
 
@@ -167,7 +170,7 @@ class APIFootballClient:
         logger.info("Fetching teams for league %s, season %s", league_safe, season_safe)
 
         headers = {
-            "x-apisports-key": self.api_key,
+            self.api_key_header: self.api_key,
             "accept": "application/json"
         }
 
@@ -216,7 +219,7 @@ class APIFootballClient:
         )
 
         headers = {
-            "x-apisports-key": self.api_key,
+            self.api_key_header: self.api_key,
             "accept": "application/json"
         }
 
@@ -261,7 +264,7 @@ class APIFootballClient:
         logger.info("Fetching match statistics for fixture %s", fixture_safe)
 
         headers = {
-            "x-apisports-key": self.api_key,
+            self.api_key_header: self.api_key,
             "accept": "application/json"
         }
 
@@ -305,7 +308,7 @@ class APIFootballClient:
         logger.info("Fetching data for player %s, season %s", player_safe, season_safe)
 
         headers = {
-            "x-apisports-key": self.api_key,
+            self.api_key_header: self.api_key,
             "accept": "application/json"
         }
 
@@ -350,7 +353,7 @@ class APIFootballClient:
         logger.info("Fetching players for team %s, season %s", team_safe, season_safe)
 
         headers = {
-            "x-apisports-key": self.api_key,
+            self.api_key_header: self.api_key,
             "accept": "application/json"
         }
 
