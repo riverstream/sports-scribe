@@ -176,7 +176,7 @@ class APIFootballClient:
 
         params = {
             "league": league_safe,
-            "season": "2023" # season
+            "season": season_safe
         }
 
         url = f"{self.base_url}/teams"

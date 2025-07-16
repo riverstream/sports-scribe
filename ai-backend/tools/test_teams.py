@@ -21,7 +21,7 @@ async def main():
     client = APIFootballClient(api_key,api_key_header,base_url)
 
     # get all teams
-    result = await client.get_teams(39, 2025)  # 7131=Estadio Libertadores de América,2025
+    result = await client.get_teams(39, 2023)  # 7131=Estadio Libertadores de América,2025
     print(result)
 
     # get one team
